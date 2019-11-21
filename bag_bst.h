@@ -133,7 +133,17 @@ namespace coen79_lab9
         else
         {
             // STUDENT WORK
+			//largest item is at root
+			//set removed equal to data from root
+			removed = root_ptr->data();
+			//move root pointer down to left
+			root_ptr = root_ptr->left();
+			//delete root node
+			delete *root_ptr;
         }
+
+		/* (1) The base case occurs if there is no right child. In this case, the largest item is at the root, so you can set removed equal to the data from the root, 
+		move the root pointer down to the left, and delete the root node. */
     }
     
     
@@ -183,6 +193,32 @@ namespace coen79_lab9
         
         return true;
     }
+
+	/* Case 4a. 
+	In this case of the bst_remove function, the root data is equal to the target, and the root node has no left child.
+
+oldroot_ptr = root_ptr;
+root_ptr = root_ptr->right( );
+delete oldroot_ptr;
+
+The variable oldroot_ptr is a local variable that we make point to the old root (the root that we are about to get rid of). 
+We then move the actual root pointer down to its right child. 
+And finally we execute, which returns the old root node to the heap.
+
+Case 4b. 
+In this case, the root node does have a left child, so we can’t simply
+move the root pointer to the right (as we did in case 4a). We could check
+whether there is a right child, and if not, we could certainly move the root
+pointer left—but we have a more general plan in mind. The plan is to find some
+entry in the non-empty left subtree, and move this entry up to the root. But which entry? Here’s an example to help you figure out which entry should be
+taken from the left subtree to replace the root entry.
+So, how do we delete the largest item from the left subtree, and
+place this same item at the root? We can use our own bst_remove_max function
+with the call:
+bst_remove_max(root_ptr->left( ), root_ptr->data( ));
+Now you know why we proposed the bst_remove_max function. Used in this
+way, it removes the largest item from the tree with root_ptr->left( ) as its
+root pointer, and it places this largest item in the root’s data field.*/
     
     
     template <class Item>
@@ -262,7 +298,6 @@ namespace coen79_lab9
         tree_clear(root_ptr);
     }
     
-    
     template <class Item>
     typename bag<Item>::size_type bag<Item>::size( ) const
     // Header file used: bintree.h
@@ -335,7 +370,6 @@ namespace coen79_lab9
         return bst_remove_all(root_ptr, target);
     }
     
-    
     template <class Item>
     bool bag<Item>::erase_one(const Item& target)
     {
@@ -359,14 +393,18 @@ namespace coen79_lab9
     template <class Item>
     void bag<Item>::operator +=(const bag<Item>& addend)
     {
+		binary_tree_node<Item> *addroot_ptr;
+
         if (root_ptr == addend.root_ptr)
         {
             // STUDENT WORK
+			addroot_ptr = tree_copy(addend.root_ptr);
+			insert_all(addroot_ptr);
+			tree_clear(addroot_ptr);
         }
         else
             insert_all(addend.root_ptr);
     }
-    
     
     template <class Item>
     bag<Item> operator +(const bag<Item>& b1, const bag<Item>& b2)
@@ -387,6 +425,9 @@ namespace coen79_lab9
         if (addroot_ptr != NULL)
         {
             // STUDENT WORK
+			insert(addroot_ptr->data());
+			//Make a recursive call to insert all of addroot_ptr’s left subtree.
+			//Make a recursive call to insert all of addroot_ptr’s right subtree.
         }
     }
 
