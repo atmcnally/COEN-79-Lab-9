@@ -18,9 +18,6 @@
     <ClCompile Include="bagexam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bagtest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bag_bst.h">

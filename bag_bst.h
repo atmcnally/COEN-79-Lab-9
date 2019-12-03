@@ -136,10 +136,11 @@ namespace coen79_lab9
 			//largest item is at root
 			//set removed equal to data from root
 			removed = root_ptr->data();
+			oldroot_ptr = root_ptr;
 			//move root pointer down to left
 			root_ptr = root_ptr->left();
 			//delete root node
-			delete *root_ptr;
+			delete oldroot_ptr;
         }
 
 		/* (1) The base case occurs if there is no right child. In this case, the largest item is at the root, so you can set removed equal to the data from the root, 
@@ -164,14 +165,14 @@ namespace coen79_lab9
             return false;
         }
         
-        if (target < root_ptr->data( ))
+        else if (target < root_ptr->data( ))
         {   // Continue looking in the left subtree
             
             // STUDENT WORK
 			bst_remove(root_ptr->left(), target);
         }
         
-        if (target > root_ptr->data( ))
+        else if (target > root_ptr->data( ))
         {   // Continue looking in the right subtree
             
             // STUDENT WORK
@@ -179,7 +180,7 @@ namespace coen79_lab9
         }
         
         // Target found
-        if (root_ptr->left( ) == NULL)
+        else if (root_ptr->left( ) == NULL)
         {   // Target was found and there is no left subtree, so we can remove this node, making the right child be the new root.
 
             // STUDENT WORK
@@ -193,10 +194,12 @@ namespace coen79_lab9
         // the current node. We'll actually replace this target with the maximum item of left subtree.
 
         // STUDENT WORK
+		else if (root_ptr->left() != NULL) {
+			bst_remove_max(root_ptr->left(), root_ptr->data());
 
-		bst_remove_max(root_ptr->left(), root_ptr->data());
-        
-        return true;
+			return true;
+		}
+
     }
 
 	/* The plan is to find some entry in the non-empty left subtree, and move this entry up to the root.
@@ -242,7 +245,7 @@ namespace coen79_lab9
 			oldroot_ptr = root_ptr;
 			root_ptr = root_ptr->right();
 			delete oldroot_ptr;
-
+			return 1;
         }
         
         // If code reaches this point, then we must remove the target from the current node. We'll actually replace this target with the
@@ -250,11 +253,7 @@ namespace coen79_lab9
         // This continued search must start at the current root (since the maximum element that we moved up from our left subtree might also be a copy of the target).
         
         // STUDENT WORK
-		//base case -- no right child, largest item at root
-
-		/* set removed equal to the data from the root, move the root pointer down to the left, and delete the root node. 
-		(2) On the other hand, if there is a right child, then there are larger items in the right subtree. 
-		In this case, make a recursive call to delete the largest item from the right subtree.*/
+		bst_remove_all(root_ptr->left(), root_ptr->data());
         
         return 1 + bst_remove_all(root_ptr, target);
     }
@@ -275,7 +274,7 @@ namespace coen79_lab9
     // Library facilities used: bintree.h
     {
         // STUDENT WORK
-		root_ptr = tree_copy(source->root_ptr);
+		root_ptr = tree_copy(source.root_ptr);
     }
     
     template <class Item>
@@ -310,6 +309,8 @@ namespace coen79_lab9
             return;
         }
         
+		binary_tree_node<Item> *tmp = new binary_tree_node<Item>(entry);
+
         do
         {
             if (cursor->data( ) >= entry)
@@ -317,7 +318,7 @@ namespace coen79_lab9
                 
                 // STUDENT WORK
 				if (cursor->left() == NULL) {
-					cursor->set_left(entry);
+					cursor->set_left(tmp);
 					done = true;
 				} else {
 					cursor = cursor->left();
@@ -329,7 +330,7 @@ namespace coen79_lab9
 
                 // STUDENT WORK
 				if (cursor->right() == NULL) {
-					cursor->set_right(entry);
+					cursor->set_right(tmp);
 					done = true;
 				}
 				else {
@@ -387,8 +388,8 @@ namespace coen79_lab9
 			return;
 		}
 
-		tree_clear(source->root_ptr);
-		root_ptr = tree_copy(source->root_ptr());
+		tree_clear(root_ptr);
+		root_ptr = tree_copy(source.root_ptr);
 
     }
     
